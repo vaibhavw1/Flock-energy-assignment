@@ -199,9 +199,7 @@ async def test_meter_not_found():
         mock_portal = mock_portal_class.return_value
 
         mock_portal.login = AsyncMock()
-        mock_portal.get_meter_details = AsyncMock(
-            side_effect=ValueError("Invalid meter response")
-        )
+        mock_portal.meter_exists = AsyncMock(return_value=False)
         mock_portal.close = AsyncMock()
 
         transport = ASGITransport(app=app)
@@ -214,7 +212,5 @@ async def test_meter_not_found():
                 "/api/v1/meters/INVALID123"
             )
 
-    assert response.status_code == 502
-    assert response.json()["detail"] == (
-        "Unable to authenticate or decode portal response"
-    )
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Meter 'INVALID123' not found"

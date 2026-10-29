@@ -3,6 +3,7 @@
 A small FastAPI service built on top of the Urja Meter Ops portal to access meter information through REST endpoints.
 
 The portal uses session-based authentication, and some of its responses are in SvelteKit's serialized format. This project handles those details and exposes the data as JSON.
+Before fetching meter details, the API checks whether the meter ID exists using the portal's search endpoint. If the meter is not found, it returns 404.
 
 ## Tech Stack
 
@@ -97,7 +98,6 @@ The OpenAPI specification is included in `openapi.json`.
 
 - Currently, a new login is performed for each API request.
 - The implementation depends on the portal's existing endpoints and response format.
-- Invalid meter details may return 502 instead of 404.
 - No caching or database is implemented.
 
 With more time, I would improve session reuse, error handling, and response validation.

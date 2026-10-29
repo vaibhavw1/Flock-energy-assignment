@@ -23,7 +23,7 @@ Another challenge was handling authentication correctly, especially maintaining 
 Given more time, I would focus on:
 
 - Reusing authenticated sessions instead of logging in for every request.
-- Improving error handling for invalid meter IDs.
+- Adding more detailed error handling for unexpected portal responses.
 - Adding Pydantic response models for better API documentation.
 - Adding more integration tests.
 

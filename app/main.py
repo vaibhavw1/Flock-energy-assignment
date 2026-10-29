@@ -129,9 +129,28 @@ async def get_meter_details(meter_id: str):
     try:
         await portal.login()
 
+        # Check if meter exists
+        exists = await portal.meter_exists(meter_id)
+
+        if not exists:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Meter '{meter_id}' not found"
+            )
+
+        # Fetch details only for valid meters
         return await portal.get_meter_details(meter_id)
 
+    except HTTPException:
+        raise
+
     except httpx.HTTPStatusError as exc:
+        if exc.response.status_code == 404:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Meter '{meter_id}' not found"
+            )
+
         raise HTTPException(
             status_code=502,
             detail=f"Upstream portal returned HTTP {exc.response.status_code}"
@@ -143,10 +162,16 @@ async def get_meter_details(meter_id: str):
             detail="Unable to communicate with the portal"
         )
 
-    except (RuntimeError, ValueError, KeyError, IndexError, TypeError):
+    except RuntimeError:
         raise HTTPException(
             status_code=502,
-            detail="Unable to authenticate or decode portal response"
+            detail="Portal authentication failed"
+        )
+
+    except (ValueError, KeyError, IndexError, TypeError):
+        raise HTTPException(
+            status_code=502,
+            detail="Unable to decode portal response"
         )
 
     finally:

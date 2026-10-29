@@ -59,6 +59,15 @@ class PortalClient:
 
         return response.json()
 
+
+    async def meter_exists(self, meter_id: str) -> bool:
+        result = await self.search_meters(query=meter_id, page=1)
+
+        return any(
+            str(meter.get("meterId", "")).lower() == meter_id.lower()
+            for meter in result.get("data", [])
+        )
+
     async def get_meter_location(self, meter_id: str):
         response = await self.client.get(
             f"/portal/meters/{meter_id}/geo"

@@ -157,6 +157,6 @@ The API currently handles upstream HTTP errors and connection failures.
 
 For location and energy, an upstream 404 is returned as 404 by the API. Other upstream failures generally return 502.
 
-One issue I noticed is that invalid meter details don't always produce a normal 404 response. The portal can return a different SvelteKit response structure, which currently causes a decoding error.
+For meter details, I added an existence check using the meter search endpoint before requesting the SvelteKit data. This avoids decoding invalid meter responses and returns 404 when the meter is not found.
 
 The implementation also logs in for each API request. Session reuse and better handling of unexpected portal responses would be the next improvements.
