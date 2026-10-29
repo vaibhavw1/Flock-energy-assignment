@@ -106,6 +106,7 @@ It also includes the network hierarchy:
 ```text
 Zone → Circle → Division → Subdivision → Substation → Feeder → DT
 ```
+One issue I found was that invalid meter IDs did not always return a normal 404 response from the SvelteKit endpoint. Initially, this caused a decoding error in my API. I fixed it by checking for an exact meter ID match through the search endpoint before requesting the details.
 
 ## 4. Meter Location
 
